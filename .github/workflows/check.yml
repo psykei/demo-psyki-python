@@ -48,7 +48,7 @@ jobs:
       - name: Set python path
         run: |
           echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-          echo "$PYTHONPATH"
+          echo $PYTHONPATH
 
       - name: Run notebooks
         run: |
