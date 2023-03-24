@@ -1,0 +1,53 @@
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - 'feature/**'
+env:
+  PROJECT_NAME: demo-psyki-python
+  WORKFLOW: check
+jobs:
+  run-notebooks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python-version:
+          - '3.9.12'
+    runs-on: ${{ matrix.os }}
+    name: Run notebooks on Python ${{ matrix.python-version }}, on ${{ matrix.os }}
+    timeout-minutes: 45
+    concurrency:
+      group: ${{ github.workflow }}-run-notebooks-${{ matrix.python-version }}-${{ matrix.os }}-${{ github.event.number || github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore Python dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Set python path
+        run: |
+          echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
+      - name: Run notebooks
+        run: |
+          python -m treon
