@@ -45,15 +45,10 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Set python path on windows
-        if: matrix.os == 'windows-latest'
+      - name: Set python path
         run: |
-          set PYTHONPATH="$(pwd)"
-
-      - name: Set python path on mac and linux
-        if: matrix.os != 'windows-latest'
-        run: |
-          export PYTHONPATH="$(pwd)"
+          echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+          echo "$PYTHONPATH"
 
       - name: Run notebooks
         run: |
