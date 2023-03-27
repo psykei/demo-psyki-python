@@ -7,5 +7,10 @@ RUN mkdir -p /root/.jupyter
 ENV JUPYTER_CONF_FILE /root/.jupyter/jupyter_notebook_config.py
 RUN echo "c.NotebookApp.allow_origin = '*'" > $JUPYTER_CONF_FILE
 RUN echo "c.NotebookApp.ip = '0.0.0.0'" >> $JUPYTER_CONF_FILE
-WORKDIR .
+RUN mkdir -p /notebooks
+COPY */*.ipynb /notebooks/
+COPY *.ipynb /notebooks/
+COPY data /notebooks/data
+COPY knowledge /notebooks/knowledge
+WORKDIR /notebooks
 CMD jupyter notebook --allow-root --no-browser
