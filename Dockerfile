@@ -9,7 +9,6 @@ RUN echo "c.NotebookApp.allow_origin = '*'" > $JUPYTER_CONF_FILE
 RUN echo "c.NotebookApp.ip = '0.0.0.0'" >> $JUPYTER_CONF_FILE
 RUN mkdir -p /notebooks
 COPY */*.ipynb /notebooks/
-COPY *.ipynb /notebooks/
 COPY data /notebooks/data
 COPY knowledge /notebooks/knowledge
 WORKDIR /notebooks
