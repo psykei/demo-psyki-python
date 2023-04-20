@@ -161,7 +161,7 @@ class SpliceJunction(Dataset):
     }
     features_values: list[str] = ['a', 'c', 'g', 't']
     target: list[str] = ["class"]
-    class_mapping: dict[str, int] = {'EI': 0, 'IE': 1, 'N': 2}
+    class_mapping: dict[str, int] = {'ei': 0, 'ie': 1, 'n': 2}
     preprocess = True
 
     @staticmethod
