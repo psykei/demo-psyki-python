@@ -5,7 +5,13 @@ from pathlib import Path
 PATH = Path(__file__).parents[0]
 
 
-def create_uneducated_predictor(input_shape: tuple, outputs: int, neurons_per_hidden_layer: list[int], activation: str = "relu", last_activation: str = "softmax") -> Model:
+def create_uneducated_predictor(
+    input_shape: tuple,
+    outputs: int,
+    neurons_per_hidden_layer: list[int],
+    activation: str = "relu",
+    last_activation: str = "softmax",
+) -> Model:
     predictor_input = Input(input_shape)
     x = predictor_input
     for neurons in neurons_per_hidden_layer:

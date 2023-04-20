@@ -31,11 +31,14 @@ class Dataset(ABCMeta):
     @classmethod
     @property
     def is_test_downloaded(mcs) -> bool:
-        return (PATH / mcs.data_test_file_name).is_file() if mcs.data_test_file_name is not None else False
+        return (
+            (PATH / mcs.data_test_file_name).is_file()
+            if mcs.data_test_file_name is not None
+            else False
+        )
 
     @classmethod
     def download(mcs) -> None:
-
         def update_columns_names(df: pd.DataFrame) -> None:
             if len(df.columns) == len(mcs.features) + len(mcs.target):
                 df.columns = mcs.features + mcs.target
@@ -131,20 +134,32 @@ class CensusIncome(Dataset):
             data = pd.read_csv(PATH / data)
         new_data = data.copy()
         new_data.drop(CensusIncome.droppable_features, axis=1, inplace=True)
-        new_data.Sex = new_data.Sex.apply(lambda x: 0 if x.replace(" ", "") in ('Male', "Male.") else 1)
-        target = new_data.income.apply(lambda x: 0 if x.replace(" ", "") in ('<=50K', "<=50K.") else 1)
+        new_data.Sex = new_data.Sex.apply(
+            lambda x: 0 if x.replace(" ", "") in ("Male", "Male.") else 1
+        )
+        target = new_data.income.apply(
+            lambda x: 0 if x.replace(" ", "") in ("<=50K", "<=50K.") else 1
+        )
         new_data.drop(CensusIncome.target, axis=1, inplace=True)
         new_data.drop(CensusIncome.nominal_features, axis=1, inplace=True)
-        one_hot = pd.get_dummies(data[CensusIncome.nominal_features].apply(lambda x: x.str.upper()),
-                                 columns=CensusIncome.nominal_features)
+        one_hot = pd.get_dummies(
+            data[CensusIncome.nominal_features].apply(lambda x: x.str.upper()),
+            columns=CensusIncome.nominal_features,
+        )
         callback: Callable = lambda pat: pat.group(1) + "_" + pat.group(2).lower()
-        one_hot.columns = [re.sub(r"([A-Z][a-zA-Z]*)[_][ ](.*)", callback, f) for f in one_hot.columns]
+        one_hot.columns = [
+            re.sub(r"([A-Z][a-zA-Z]*)[_][ ](.*)", callback, f) for f in one_hot.columns
+        ]
         # Special characters removed
-        one_hot.columns = [f.replace('?', 'unknown') for f in one_hot.columns]
-        one_hot.columns = [f.replace('-', '_') for f in one_hot.columns]
-        one_hot.columns = [f.replace('&', '_') for f in one_hot.columns]
-        one_hot.columns = [f.replace('NativeCountry_outlying_us(guam_usvi_etc)', 'NativeCountry_outlying_us') for f in
-                           one_hot.columns]
+        one_hot.columns = [f.replace("?", "unknown") for f in one_hot.columns]
+        one_hot.columns = [f.replace("-", "_") for f in one_hot.columns]
+        one_hot.columns = [f.replace("&", "_") for f in one_hot.columns]
+        one_hot.columns = [
+            f.replace(
+                "NativeCountry_outlying_us(guam_usvi_etc)", "NativeCountry_outlying_us"
+            )
+            for f in one_hot.columns
+        ]
         new_data = pd.concat([new_data, one_hot, target], axis=1)
         return new_data
 
@@ -153,15 +168,17 @@ class SpliceJunction(Dataset):
     name: str = "splice-junction"
     knowledge_file_name: str = "splice-junction.pl"
     data_file_name: str = "splice-junction.csv"
-    data_url: str = UCI_URL + "molecular-biology/splice-junction-gene-sequences/splice.data"
+    data_url: str = (
+        UCI_URL + "molecular-biology/splice-junction-gene-sequences/splice.data"
+    )
     features = {
         "X" + ("_" if j < 0 else "") + str(abs(j)) + f: k + i * 4
         for i, j in enumerate(list(range(-30, 0)) + list(range(1, 31)))
         for k, f in enumerate(["a", "c", "g", "t"])
     }
-    features_values: list[str] = ['a', 'c', 'g', 't']
+    features_values: list[str] = ["a", "c", "g", "t"]
     target: list[str] = ["class"]
-    class_mapping: dict[str, int] = {'ei': 0, 'ie': 1, 'n': 2}
+    class_mapping: dict[str, int] = {"ei": 0, "ie": 1, "n": 2}
     preprocess = True
 
     @staticmethod
@@ -169,7 +186,7 @@ class SpliceJunction(Dataset):
         def _data_to_int(d: pd.DataFrame, mapping: dict[str:int]) -> pd.DataFrame:
             return d.applymap(lambda x: mapping[x] if x in mapping.keys() else x)
 
-        def _get_values(mapping: dict[str: set[str]]) -> Iterable[str]:
+        def _get_values(mapping: dict[str : set[str]]) -> Iterable[str]:
             result = set()
             for values_set in mapping.values():
                 for value in values_set:
@@ -177,7 +194,7 @@ class SpliceJunction(Dataset):
             return result
 
         def _get_binary_data(
-                d: pd.DataFrame, mapping: dict[str: set[str]]
+            d: pd.DataFrame, mapping: dict[str : set[str]]
         ) -> pd.DataFrame:
             sub_features = sorted(_get_values(mapping))
             results = []
