@@ -5,6 +5,7 @@ on:
       - main
       - master
       - develop
+      - test
       - 'feature/**'
 env:
   PROJECT_NAME: demo-psyki-python
