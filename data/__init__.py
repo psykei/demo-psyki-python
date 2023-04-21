@@ -16,7 +16,7 @@ class Dataset(ABCMeta):
     data_test_file_name: str = None
     knowledge_filename: str = None
     data_url: str = None
-    data_url_test: str = None
+    data_test_url: str = None
     class_mapping: dict[str, int] = {}
     features: list[str] = []
     target: list[str] = []
@@ -49,9 +49,9 @@ class Dataset(ABCMeta):
             )
             update_columns_names(d)
             d.to_csv(PATH / mcs.data_file_name, index=False)
-        if mcs.data_url_test is not None and not mcs.is_test_downloaded:
+        if mcs.data_test_url is not None and not mcs.is_test_downloaded:
             d: pd.DataFrame = pd.read_csv(
-                mcs.data_url_test, sep=r",\s*", header=None, encoding="utf8"
+                mcs.data_test_url, sep=r",\s*", header=None, encoding="utf8", skiprows=1, skip_blank_lines=True
             )
             update_columns_names(d)
             d.to_csv(PATH / mcs.data_test_file_name, index=False)
@@ -147,8 +147,9 @@ class CensusIncome(Dataset):
             columns=CensusIncome.nominal_features,
         )
         callback: Callable = lambda pat: pat.group(1) + "_" + pat.group(2).lower()
+
         one_hot.columns = [
-            re.sub(r"([A-Z][a-zA-Z]*)[_][ ](.*)", callback, f) for f in one_hot.columns
+            re.sub(r"([A-Z][a-zA-Z]*)[_][ ]?(.*)", callback, f) for f in one_hot.columns
         ]
         # Special characters removed
         one_hot.columns = [f.replace("?", "unknown") for f in one_hot.columns]
