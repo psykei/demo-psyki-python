@@ -161,8 +161,7 @@ class CensusIncome(Dataset):
             for f in one_hot.columns
         ]
         new_data = pd.concat([new_data, one_hot, target], axis=1)
-        for c in new_data.columns:
-            print(c)
+        new_data = new_data.reindex(sorted(new_data.columns), axis=1)
         return new_data
 
 
