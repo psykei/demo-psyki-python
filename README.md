@@ -7,6 +7,10 @@ There exists a doker image for the demos!
 ```
 docker pull pikalab/demo-psyki-python
 ```
+For M1 users
+```
+docker pull pikalab/demo-psyki-python:latest-apple-m1
+```
 
 ## Before starting
 All notebooks are self-contained and should be runnable in a fresh environment.

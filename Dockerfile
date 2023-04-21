@@ -11,5 +11,6 @@ RUN mkdir -p /notebooks
 COPY */*.ipynb /notebooks/
 COPY data /notebooks/data
 COPY knowledge /notebooks/knowledge
+COPY utils /notebooks/utils
 WORKDIR /notebooks
 CMD jupyter notebook --allow-root --no-browser
