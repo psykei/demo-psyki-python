@@ -5,11 +5,16 @@ In our intentions, a user should be able to get started with PSyKI by cloning th
 
 There exists a doker image for the demos!
 ```
-docker pull pikalab/demo-psyki-python
+docker pull pikalab/demo-psyki-python:latest
 ```
 For M1 users
 ```
 docker pull pikalab/demo-psyki-python:latest-apple-m1
+```
+
+To execute the container run
+```
+docker run -it --rm -p 8888:8888 pikalab/demo-psyki-python
 ```
 
 ## Before starting
