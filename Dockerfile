@@ -1,8 +1,9 @@
 FROM python:3.9
+ARG PSYKI_VERSION
 EXPOSE 8888
 RUN apt update; apt install -y -q openjdk-17-jdk
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install jupyter
+RUN pip install psyki==$PSYKI_VERSION
 RUN mkdir -p /root/.jupyter
 ENV JUPYTER_CONF_FILE /root/.jupyter/jupyter_notebook_config.py
 RUN echo "c.NotebookApp.allow_origin = '*'" > $JUPYTER_CONF_FILE

@@ -36,13 +36,18 @@ jobs:
         id: get-version
         run: echo "version=$(python setup.py get_project_version | tail -n 1)" >> $GITHUB_OUTPUT
 
+      - name: Get latest psyki version
+        id: get-latest-psyki-version
+        run: echo "psyki=$(yolk -V psyki | cut -c 7-)" >> $GITHUB_OUTPUT
+
       - name: Create Docker Image
         run: |
-          ./.github/scripts/retry.sh "docker build -t pikalab/demo-psyki-python:$TUTORIAL_VERSION --build-arg TUTORIAL_VERSION=$TUTORIAL_VERSION ."
+          ./.github/scripts/retry.sh "docker build -t pikalab/demo-psyki-python:$TUTORIAL_VERSION --build-arg TUTORIAL_VERSION=$TUTORIAL_VERSION --build-arg PSYKI_VERSION=$PSYKI_VERSION ."
           docker tag pikalab/demo-psyki-python:$TUTORIAL_VERSION pikalab/demo-psyki-python:latest
         shell: bash
         env:
           TUTORIAL_VERSION: '${{ steps.get-version.outputs.version }}'
+          PSYKI_VERSION: '${{ steps.get-version.outputs.psyki }}'
 
       - name: Push Image on Docker Hub
         run: |
